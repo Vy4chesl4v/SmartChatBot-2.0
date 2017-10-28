@@ -1,0 +1,137 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace ChatBot2._0
+{
+    class Program
+    {
+        public static string ans;
+        public static string text;
+        
+
+        static void Main(string[] args)
+        {
+
+            string[] baza = File.ReadAllLines("bazeVO.txt");
+            Console.Title = "ChatBot 2.0 || Developed by Vy4chesl4v";
+            cwbot("What's your name?");
+
+            human();
+            string name = Console.ReadLine();
+
+            cwbot("Hello," + name);
+           
+
+            while (true)
+            {
+                human();
+                text = Console.ReadLine().ToLower();
+                cwbot(Ans(text));
+            }
+        }
+
+        public static void cwbot(string otvet)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Bot:");
+            Console.ResetColor();
+            Console.WriteLine(otvet);
+        }
+
+        static string Ans (string q) {
+
+           
+            string tr = "?)(:!№;,=-_^'";
+            ans = "";
+
+            string[] baza = File.ReadAllLines("bazeVO.txt");
+
+            q = q.ToLower();
+            q = Trim(q,tr.ToCharArray());
+
+            
+
+            for (int i = 0; i < baza.Length; i+=2)
+            {
+                if (q == baza[i].ToLower())
+                {
+                    ans = baza[i+1];
+                    break;
+                }
+
+            }
+
+            //проверка на мат
+            CheckMat(q);
+
+            if (ans == string.Empty)
+            {
+             NewQuest(q);  
+            }
+
+            return ans;
+
+        }
+
+        public static void human()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("I am:");
+            Console.ResetColor();
+           
+        }
+
+        public static void NewQuest (string quest)
+        {
+            cwbot("Sorry, but i don't understand.Do you want add new question?");
+            human();
+            string otvet = Console.ReadLine().ToLower();
+            if (otvet == "yes".ToLower())
+            {
+                cwbot("Enter the answer");
+                human();
+                string addotvet = Console.ReadLine().ToLower();
+                string[] baza = File.ReadAllLines("bazeVO.txt");
+
+              
+                File.AppendAllText("bazeVO.txt", quest);
+                File.AppendAllText("bazeVO.txt", Environment.NewLine);
+                File.AppendAllText("bazeVO.txt", addotvet);
+                File.AppendAllText("bazeVO.txt", Environment.NewLine);
+                ans = "Completed";
+            }
+            else
+            {
+                ans = "Failed";
+            }
+        }
+
+        public static string Trim(string str, char[] chars)
+        {
+            string strA = str;
+
+            for (int i = 0; i < chars.Length; i++)
+            {
+                strA = strA.Replace(char.ToString(chars[i]), "");
+            }
+            return strA;
+        }
+
+        public static void CheckMat (string whatCheck)
+        {         
+            string[] BazaMatov = File.ReadAllLines("BM.txt");
+            
+
+            for (int i = 0; i < BazaMatov.Length; i++)
+            {
+                if (whatCheck.Contains(BazaMatov[i].ToLower()))
+                    ans = "Сlose your dirty mouth!";
+            }
+        }
+
+    }
+}
